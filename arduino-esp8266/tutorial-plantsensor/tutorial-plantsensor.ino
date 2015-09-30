@@ -23,8 +23,15 @@ int moisture = 0;
 int timer = 0;
 MicroGear microgear(client);
 
+void onConnected(char *attribute, uint8_t* msg, unsigned int msglen) {
+  Serial.println("Connected to NETPIE...");
+  microgear.setName("soil_moisture_sensor");
+}
+
 void setup() {
   Serial.begin(115200);
+
+  microgear.on(CONNECTED,onConnected);
 
   Serial.println("Starting...");
 
@@ -43,7 +50,6 @@ void setup() {
     microgear.resetToken();
     microgear.init(GEARKEY, GEARSECRET, SCOPE);
     microgear.connect(APPID);
-    microgear.setName("soil_moisture_sensor");
   }
 }
 
@@ -76,7 +82,6 @@ void loop() {
   } else {
     Serial.println("connection lost, reconnect...");
     microgear.connect(APPID);
-    microgear.setName("soil_moisture_sensor");
     delay(timer);
     timer += 500;
   }
